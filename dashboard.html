@@ -122,11 +122,37 @@
         </div>
       </div>
       <div class="transactions-section">
-        <h3>Recent Transaction Activities</h3>
-        <div class="transaction-list" id="transactionList">
-          <!-- Transactions will be injected here by JS -->
-        </div>
+    <h3>Recent Transaction Activities</h3>
+    <div class="transaction-list" id="transactionList">
+      <!-- New transactions added here -->
+      <div class="transaction debit">
+        <div class="code">TRF/7HJK89L2</div>
+        <div class="date">03 Aug 2025, 2:15 pm</div>
+        <div class="desc">Transfer to TechGlobal Solutions (Acct: 7384920184)</div>
+        <div class="amount">-$50,000 USD</div>
+        <div class="status completed">Completed</div>
+        <a href="#" class="view-details">View Details</a>
       </div>
+      
+      <div class="transaction debit">
+        <div class="code">TRF/5MNB34V9</div>
+        <div class="date">04 Aug 2025, 10:30 am</div>
+        <div class="desc">Transfer to Oceanic Imports Ltd (Acct: 5628394712)</div>
+        <div class="amount">-$50,000 USD</div>
+        <div class="status completed">Completed</div>
+        <a href="#" class="view-details">View Details</a>
+      </div>
+      
+      <div class="transaction debit">
+        <div class="code">TRF/9KLP21R6</div>
+        <div class="date">05 Aug 2025, 4:45 pm</div>
+        <div class="desc">Transfer to Summit Financial Group (Acct: 8947561230)</div>
+        <div class="amount">-$50,000 USD</div>
+        <div class="status completed">Completed</div>
+        <a href="#" class="view-details">View Details</a>
+      </div>
+    </div>
+  </div>
       <div class="balance-flow-section">
         <h3>Balance Flow</h3>
         <div class="balance-flow-chart">
@@ -148,89 +174,99 @@
   <script src="dashboard.js"></script>
   <script>
     // Render transactions from localStorage
-    function renderTransactions() {
+       function renderTransactions() {
       const container = document.getElementById('transactionList');
       let transactions = JSON.parse(localStorage.getItem('transactions') || '[]');
       let html = '';
 
+      // New transactions for August
       const newTransactions = [
-    {
-      code: 'TRF/7HJK89L2',
-      date: '03 Aug 2025, 2:15 pm',
-      desc: 'Transfer to TechGlobal Solutions (Acct: 7384920184)',
-      amount: '-$50,000 USD',
-      type: 'debit',
-      status: 'Completed'
-    },
-    {
-      code: 'TRF/5MNB34V9',
-      date: '04 Aug 2025, 10:30 am',
-      desc: 'Transfer to Oceanic Imports Ltd (Acct: 5628394712)',
-      amount: '-$50,000 USD',
-      type: 'debit',
-      status: 'Completed'
-    },
-    {
-      code: 'TRF/9KLP21R6',
-      date: '05 Aug 2025, 4:45 pm',
-      desc: 'Transfer to Summit Financial Group (Acct: 8947561230)',
-      amount: '-$50,000 USD',
-      type: 'debit',
-      status: 'Completed'
+        {
+          code: 'TRF/7HJK89L2',
+          date: '03 Aug 2025, 2:15 pm',
+          desc: 'Transfer to TechGlobal Solutions (Acct: 7384920184)',
+          amount: '-$50,000 USD',
+          type: 'debit',
+          status: 'Completed'
+        },
+        {
+          code: 'TRF/5MNB34V9',
+          date: '04 Aug 2025, 10:30 am',
+          desc: 'Transfer to Oceanic Imports Ltd (Acct: 5628394712)',
+          amount: '-$50,000 USD',
+          type: 'debit',
+          status: 'Completed'
+        },
+        {
+          code: 'TRF/9KLP21R6',
+          date: '05 Aug 2025, 4:45 pm',
+          desc: 'Transfer to Summit Financial Group (Acct: 8947561230)',
+          amount: '-$50,000 USD',
+          type: 'debit',
+          status: 'Completed'
+        }
+      ];
+
+      // Default hardcoded transactions
+      const defaultTxns = [
+        {
+          code: 'FIR/BBNCFX0J3-0325',
+          date: '25 Mar 2025, 1:47 pm',
+          desc: 'Reversal ONLINE TRANSFER/QEHYY/4044',
+          amount: '+500000 USD',
+          type: 'credit',
+          status: 'Completed'
+        },
+        {
+          code: 'FIR/2MDOHVZ8S-0325',
+          date: '25 Mar 2025, 1:36 pm',
+          desc: '- 500000 USD',
+          amount: '-500000 USD',
+          type: 'debit',
+          status: ''
+        }
+      ];
+
+      // Combine all transactions (new first, then existing, then defaults)
+      const allTransactions = [...newTransactions, ...transactions, ...defaultTxns];
+
+      allTransactions.forEach(txn => {
+        html += `
+          <div class="transaction ${txn.type}">
+            <div class="code">${txn.code}</div>
+            <div class="date">${txn.date}</div>
+            <div class="desc">${txn.desc}</div>
+            <div class="amount">${txn.amount}</div>
+            ${txn.status ? `<div class="status completed">${txn.status}</div>` : ''}
+            <a href="#" class="view-details">View Details</a>
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
     }
-  ];
 
-  // Default hardcoded transactions
-  const defaultTxns = [
-    {
-      code: 'FIR/BBNCFX0J3-0325',
-      date: '25 Mar 2025, 1:47 pm',
-      desc: 'Reversal ONLINE TRANSFER/QEHYY/4044',
-      amount: '+500000 USD',
-      type: 'credit',
-      status: 'Completed'
-    },
-    {
-      code: 'FIR/2MDOHVZ8S-0325',
-      date: '25 Mar 2025, 1:36 pm',
-      desc: '- 500000 USD',
-      amount: '-500000 USD',
-      type: 'debit',
-      status: ''
+    // Updated renderBalance function to account for the new transactions
+    function renderBalance() {
+      let balance = parseFloat(localStorage.getItem('balance') || '20635944');
+      // Deduct $150,000 for the three new transactions
+      balance -= 150000;
+      
+      function format(num) {
+        return num.toLocaleString('en-US', {maximumFractionDigits: 0});
+      }
+      
+      // Update all balance displays
+      if(document.getElementById('mainBalance')) document.getElementById('mainBalance').textContent = format(balance);
+      if(document.getElementById('mainBalanceSmall')) document.getElementById('mainBalanceSmall').textContent = format(balance);
+      if(document.getElementById('profileBalance')) document.getElementById('profileBalance').textContent = format(balance);
+      if(document.getElementById('profileBalanceLocal')) document.getElementById('profileBalanceLocal').textContent = format(balance);
+      if(document.getElementById('overviewBalance')) document.getElementById('overviewBalance').textContent = format(balance);
+      if(document.getElementById('summaryBalance')) document.getElementById('summaryBalance').textContent = format(balance);
+      
+      // Store the updated balance
+      localStorage.setItem('balance', balance);
     }
-  ];
-
-  // Combine all transactions (new first, then existing, then defaults)
-  const allTransactions = [...newTransactions, ...transactions, ...defaultTxns];
-
-  allTransactions.forEach(txn => {
-    html += `
-      <div class="transaction ${txn.type}">
-        <div class="code">${txn.code}</div>
-        <div class="date">${txn.date}</div>
-        <div class="desc">${txn.desc}</div>
-        <div class="amount">${txn.amount}</div>
-        ${txn.status ? `<div class="status completed">${txn.status}</div>` : ''}
-        <a href="#" class="view-details">View Details</a>
-      </div>
-    `;
-  });
-
-  container.innerHTML = html;
-  
-  // Update the balance to reflect these transactions
-  updateBalanceForNewTransactions();
-}
-
-function updateBalanceForNewTransactions() {
-  let balance = parseFloat(localStorage.getItem('balance') || '20635944');
-  
-  // Deduct $150,000 for the three new transactions
-  balance -= 150000;
-  
-  localStorage.setItem('balance', balance);
-  renderBalance(); // Update all balance displays
-}
 
     // Render balance from localStorage
     function renderBalance() {
@@ -559,5 +595,4 @@ function updateBalanceForNewTransactions() {
   </div>
 </div>
 </body>
-
 </html>
